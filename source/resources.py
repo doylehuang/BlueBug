@@ -145,6 +145,11 @@ REDFISH_RESOURCES = {
             "/redfish/v1/Fabrics",
             "Fabrics.tpl"),
         get = get_handler.get_fabrics_root),
+    "UpdateService_root" : redfish_resource (
+        common = (
+            "/redfish/v1/UpdateService",
+            "UpdateService.tpl"),
+        get = get_handler.get_UpdateService_root),
    
     #########################
     # Chassis components
@@ -322,6 +327,11 @@ REDFISH_RESOURCES = {
             "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.MasterPhaseWriteRead",
             "BMC/BMCI2cData.tpl"),
         post=post_handler.post_bmc_master_phase_write_read),
+    "bmc_fw_update_push_model": redfish_resource(
+        common=(
+            "/redfish/v1/UpdateService/Actions/UpdateService.SimpleUpdate",
+            "SimpleUpdate.tpl"),
+        post = post_handler.post_bmc_fw_update_push_mode),
 
     #########################
     # Fabrics components

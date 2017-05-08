@@ -19,6 +19,9 @@
   "AccountService": {
     "@odata.id": "/redfish/v1/AccountService"
   },
+  "UpdateService": {
+    "@odata.id": "/redfish/v1/UpdateService"
+  },
   "Links": {
   },
   "Oem": {}

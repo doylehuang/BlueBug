@@ -137,6 +137,10 @@ def get_managers_root ():
 def get_fabrics_root ():
     return view_helper.return_redfish_resource ("fabrics_root")
 
+@auth_basic (authentication.validate_user)
+def get_UpdateService_root ():
+    return view_helper.return_redfish_resource ("UpdateService_root")
+
 #########################
 # Chassis components
 #########################

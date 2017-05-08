@@ -11,6 +11,7 @@ import dbus
 import dbus.service
 import collections
 from obmc.dbuslib.bindings import get_dbus, DbusProperties, DbusObjectManager
+import shutil
 
 def PSU_switch_phase(bus, slaveaddress, pmbusphase):
     PSU_PHASE = '0x04'
@@ -142,6 +143,48 @@ def set_bmc_fwupdate(action):
 
     return set_success_dict(result)
 
+def set_bmc_fwupdate_push_mode(imageuri, transferprotocol):
+    image_base_path = '/var/wcs/home/'
+    op = 'Prepare'
+    result = {}
+    result["RetStatus"] = "OK"
+    old_file = ""
+    new_file = ""
+    try:
+        sp_imageuri = imageuri.split("//")
+        old_file = image_base_path+sp_imageuri[1].split("?")[0]
+        new_file = image_base_path+"image-bmc"
+        body = sp_imageuri[1].split("?")[1].replace("component=", "").replace("partition=", "")
+        component = body.split("&")[0].rstrip()
+        partition = body.split("&")[1].rstrip()
+        if component != 'bmc':
+            result["RetStatus"] = 'Post [ImageURI] Parameter error - component setting must be bmc'
+            return set_success_dict(result)
+        elif partition != 'primary':
+            result["RetStatus"] = 'Post [ImageURI] Parameter error - partition setting must be primary'
+            return set_success_dict(result)
+    except:
+        result["RetStatus"] = 'Post [ImageURI] format Parameter error'
+        return set_success_dict(result)
+
+    if  transferprotocol.rstrip() != 'OEM':
+        result["RetStatus"] = 'Post [transferprotocol] Parameter error - transferprotocol setting must be OEM'
+        return set_success_dict(result)
+
+    try:
+        shutil.move(old_file, new_file)
+    except:
+        result["RetStatus"] = 'File not exist!!! [' + old_file + ']'
+        return set_success_dict(result)
+
+    try:
+        dbusctl = obmc_dbuslib.ObmcRedfishProviders()
+        dbusctl.fw_update_operation(str(op))
+    except Exception, e:
+        return set_failure_dict(('Exception:', e), completion_code.failure)
+
+    result["RetStatus"] = "OK"
+    return set_success_dict(result)
 
 def get_bmc_fwupdate_state(action):
     result = {}

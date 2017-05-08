@@ -82,7 +82,15 @@ def post_bmc_fw_update(slot_id):
     result = controls.manage_bmc.set_bmc_fwupdate(**params)
     return check_action_result(result)
 
-
+def post_bmc_fw_update_push_mode():
+    result ={}
+    validation = {
+        "ImageURI" : parameter_parser("imageuri", str),
+        "TransferProtocol" : parameter_parser("transferprotocol", str)
+    }
+    params = validate_action_parameters(validation)
+    result = controls.manage_bmc.set_bmc_fwupdate_push_mode(**params)
+    return view_helper.return_redfish_resource ("bmc_fw_update_push_model", values = result)
 
 def post_bmc_fw_update_state(slot_id):
     pre_check_slot_id(slot_id)
