@@ -1,0 +1,6 @@
+<%
+    setdefault ("SUPPORT", "#")
+%>
+{
+	"Result": "{{SUPPORT}}"
+}
